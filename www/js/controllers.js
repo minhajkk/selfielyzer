@@ -4,7 +4,65 @@
  */
 
 //============================================================================================ Home Controller
-selfielyzer.controller('HomeCtrl', function($scope, $stateParams,SelfielyzerService, $state, $http, $cordovaCamera){
+selfielyzer.controller('HomeCtrl', function($scope, $rootScope, $stateParams,SelfielyzerService, $state, $http, $cordovaCamera){
+
+  $rootScope.progress = false;
+
+  $scope.selielyze = function() {
+    $rootScope.progress = true;
+
+    navigator.camera.getPicture(function (imageData) {
+      $rootScope.imgURI = "data:image/jpeg;base64," + imageData;
+
+      $http({
+        url: "https://api.projectoxford.ai/emotion/v1.0/recognize",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/octet-stream",
+          "Ocp-Apim-Subscription-Key": "<api-key>"
+        },
+        data: makeblob("data:image/jpeg;base64," + imageData),
+        processData: false
+      })
+        .then(function(response) {
+          var max = Object.keys(response.data[0].scores).reduce(function(m, k){
+            return response.data[0].scores[k] > m ? response.data[0].scores[k] : m
+          }, -Infinity);
+
+          var maxObj = [];
+
+          angular.forEach(response.data[0].scores, function(value, key) {
+            if(value == max) {
+              this.push(key);
+            }
+          }, maxObj);
+
+          $rootScope.expression = maxObj[0];
+          $state.go('photo');
+
+        },
+        function(response) { // optional
+          console.log("failed");
+          console.log(response.data);
+        });
+
+    }, function () {
+      // An error occured. Show a message to the user
+      console.log("err -> " + err);
+    }, {
+      quality: 75,
+      destinationType: Camera.DestinationType.DATA_URL,
+      sourceType: Camera.PictureSourceType.CAMERA,
+      allowEdit: true,
+      encodingType: Camera.EncodingType.JPEG,
+      targetWidth: 256,
+      targetHeight: 371,
+      popoverOptions: CameraPopoverOptions,
+      saveToPhotoAlbum: true,
+      cameraDirection: 1
+    });
+  };
+
 
   function makeblob (dataURL) {
     var BASE64_MARKER = ';base64,';
@@ -27,62 +85,15 @@ selfielyzer.controller('HomeCtrl', function($scope, $stateParams,SelfielyzerServ
 
     return new Blob([uInt8Array], { type: contentType });
   }
+});
 
+//============================================================================================ Selfie Controller
 
-  $scope.takePhoto = function () {
+selfielyzer.controller('SelfieCtrl', function($scope, $rootScope, $state){
 
-    var options = {
-      quality: 75,
-      destinationType: Camera.DestinationType.DATA_URL,
-      sourceType: Camera.PictureSourceType.CAMERA,
-      allowEdit: true,
-      encodingType: Camera.EncodingType.JPEG,
-      targetWidth: 300,
-      targetHeight: 300,
-      popoverOptions: CameraPopoverOptions,
-      saveToPhotoAlbum: true,
-      cameraDirection: 1
-    };
-
-    $cordovaCamera.getPicture(options).then(function (imageData) {
-      $scope.expression = "";
-
-      $scope.imgURI = "data:image/jpeg;base64," + imageData;
-
-      $http({
-        url: "https://api.projectoxford.ai/emotion/v1.0/recognize",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/octet-stream",
-          "Ocp-Apim-Subscription-Key": ""
-        },
-        data: makeblob("data:image/jpeg;base64," + imageData)
-      })
-      .then(function(response) {
-          var max = Object.keys(response.data[0].scores).reduce(function(m, k){
-            return response.data[0].scores[k] > m ? response.data[0].scores[k] : m
-          }, -Infinity);
-
-          var maxObj = [];
-
-          angular.forEach(response.data[0].scores, function(value, key) {
-            if(value == max) {
-              this.push(key);
-            }
-          }, maxObj);
-
-          console.log("results->> " + maxObj[0]);
-          $scope.expression = maxObj[0];
-      },
-      function(response) { // optional
-        console.log("failed");
-        console.log(response.data);
-      });
-
-  }, function (err) {
-      // An error occured. Show a message to the user
-      console.log("err -> " + err);
-    });
-  };
-
+  $scope.GoHome = function(){
+    console.log("gohome");
+    $rootScope.progress = false;
+    $state.go('home');
+  }
 });

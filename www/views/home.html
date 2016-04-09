@@ -1,13 +1,12 @@
-<ion-view hide-back-button="true" view-title="Selfilizer" >
+<ion-view hide-back-button="true" view-title="" hide-nav-bar="true">
+
   <ion-content>
-    <h1 ng-show="expression">
-      {{expression}}
-    </h1>
-
-    <button class="button button-full button-positive" ng-click="takePhoto()">
-      Selfielyze
-    </button>
-
+    <div class="row">
+      <div class="col" style="font-size:200px">
+        <a ng-hide="progress" href="#" ng-click="selielyze()"><i class="icon ion-ios-camera larger"></i></a>
+        <ion-spinner ng-show="progress" icon="lines"></ion-spinner>
+      </div>
+    </div>
 
   </ion-content>
 </ion-view>

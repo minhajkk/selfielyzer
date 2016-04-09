@@ -1,14 +1,19 @@
 var selfielyzer = angular.module('selfielyzer', ['ionic', 'ngCordova']);
 
 selfielyzer.config(function($stateProvider, $urlRouterProvider, $compileProvider) {
-  $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
+  $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https|ftp|mailto|file|tel|data)/);
 
-  $stateProvider
+$stateProvider
     // setup an abstract state for the tabs directive
     .state('home', {
       url: '/',
       templateUrl: 'views/home.html',
       controller: 'HomeCtrl'
+    })
+    .state('photo', {
+      url: '/photo',
+      templateUrl: 'views/selfie.html',
+      controller: 'SelfieCtrl'
     });
 
   $urlRouterProvider.otherwise('/');

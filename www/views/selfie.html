@@ -1,0 +1,18 @@
+<ion-view hide-back-button="false" view-title="Selfielyzer">
+  <ion-nav-bar>
+    <ion-nav-back-button class="button-clear" ng-click="GoHome()">
+      <i class="ion-arrow-left-c"></i> Back
+    </ion-nav-back-button>
+  </ion-nav-bar>
+
+  <ion-content class="selfieDIV">
+    <div class="row row-center">
+      <div class="col col-center">
+        <h1 ng-show="expression" style="text-transform: uppercase;" class="title ">{{expression}}</h1>
+      </div>
+    </div>
+    <div class="row">
+      <img data-ng-src="{{imgURI}}" class="selfie" width="256px" height="371px"/>
+    </div>
+  </ion-content>
+</ion-view>

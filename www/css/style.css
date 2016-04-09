@@ -1,1 +1,33 @@
 /* Empty. Add your own CSS if you like */
+.scroll-content:before {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  display: block;
+  background-image: url("../img/faces.icon.png");
+  width: 1200px;
+  height: 800px;
+  -webkit-filter: blur(50px);
+  -moz-filter: blur(50px);
+  -o-filter: blur(50px);
+  -ms-filter: blur(50px);
+  filter: blur(50px);
+}
+
+.scroll-content {
+  display: table !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: fixed;
+}
+.scroll {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+.selfieDIV  > div:first-child {
+  vertical-align: top !important;
+}
+.selfie {
+  width: 100%;
+}
